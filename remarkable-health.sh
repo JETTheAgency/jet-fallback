@@ -34,7 +34,10 @@ NTFY_TITLE="${NTFY_TITLE:-jet-remarkable-pdf}"
 ALERT_TO="${ALERT_EMAIL_TO:-j@jet.events}"
 ALERT_FROM="${ALERT_EMAIL_FROM:-JET Automation Watchdog <alerts@jet.events>}"
 STATE_FILE="${STATE_FILE:-remarkable-health-state.json}"
-REMIND_SECS=3600
+# One incident is one email plus a daily reminder, not one every hour. The
+# 2026-09-09 login_expired outage sent four emails in twelve hours and Jay
+# still missed it, so volume was never the thing that was missing.
+REMIND_SECS="${REMIND_SECS:-86400}"
 SILENT_SECS="${SILENT_SECS:-43200}"
 
 # topic_override lets a manual run prove a condition against a throwaway topic
@@ -299,7 +302,7 @@ if [ -n "$cause" ]; then
     since=$now
     last_alert=$now
     should_send="first"
-  elif [ $((now - last_alert)) -ge $REMIND_SECS ]; then
+  elif [ $((now - last_alert)) -ge "$REMIND_SECS" ]; then
     last_alert=$now
     should_send="reminder"
   fi
