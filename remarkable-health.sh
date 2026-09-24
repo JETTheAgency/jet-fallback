@@ -173,20 +173,19 @@ steps_for_cause() {
     login_expired)
       cat <<'STEPS'
 1. Nothing is broken on your side. The reMarkable web session the runner uses has expired
-   and only a real sign-in can renew it. On StudioPro, open Claude Code and paste this:
+   and only a real sign-in can renew it. On either laptop (Aura or StudioPro), open
+   Claude Code and paste this:
 
-   ----- paste into Claude Code (Model + effort: Sonnet 5, medium) -----
-   Use my JET brain. Open and FULLY read the "Re-login" section of
-   `C:\Users\jayca\jet-claude-central\docs\loops\L240-remarkable-pdf-automation.md`
-   (absolute path; jayca = StudioPro).
-   The reMarkable PDF runner reported `login_expired`. Follow that section: open a headed
-   browser at `https://my.remarkable.com`, have me sign in as `j@jet.events`, save the
-   session state, copy it to homedrums over `ssh Jay@100.100.54.91`, prove it in a fresh
-   headless context by exporting one notebook, then start the task once and confirm the
-   next status says ok.
+   ----- paste into Claude Code (Model + effort: Sonnet 5, medium; single session; repo: jet-claude-central) -----
+   Use my JET brain. Open and FULLY read the "Re-login recipe" section of
+   `~/dev/jet-claude-central/docs/loops/L240-remarkable-pdf-automation.md`
+   and follow its "Proven path" steps: open the sign-in page with the Playwright MCP
+   browser, wait for me to sign in as `j@jet.events`, save the session, copy it to
+   homedrums, run render.py once, start the scheduled task, and confirm Drive has the PDF.
    ----- end paste -----
 
-2. When Claude asks you to sign in, sign in as `j@jet.events` on the window it opens.
+2. A browser window titled "Log in to reMarkable" comes to the front. Sign in as
+   `j@jet.events`, wait until your notebooks show, then type `done` in Claude Code.
    That is the only part it cannot do for you.
 STEPS
       ;;
