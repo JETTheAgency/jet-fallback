@@ -1,0 +1,8 @@
+{
+  "$comment_attribution": "No Claude attribution on commits or PRs (Hard Rule 10, Jay 2026-10-03). Empty strings hide the trailer and the PR line; includeCoAuthoredBy is the older key, kept false for older clients.",
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
+  "includeCoAuthoredBy": false
+}
