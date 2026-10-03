@@ -14,6 +14,7 @@ SITES=(
   "https://jet-ops-hub.vercel.app"
   "https://compass.jet.events"
   "https://jetestimatebuilder.netlify.app"
+  "https://scribe.jet.events"
   "https://jet-bematrix-calc.netlify.app"
   "https://sage.jet.events"
   "https://jet-command-center-production.up.railway.app"
