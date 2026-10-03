@@ -32,6 +32,14 @@ SITES=(
   # Monday all-clear email, which existed only to prove the same thing on a timer.
   # Loop L222, row C5 of the 2026-08-29 notification load audit.
   "https://msuhogoehzpixcnmsbzb.supabase.co/functions/v1/ops-watchdog"
+  # Not a site: the Ops Hub SOP sync watchdog's dead man's switch, same shape
+  # and same reason as the two probes above. The 07:30 Pacific watchdog emails
+  # Jay a RED when the nightly SOP sync does not go through and is silent when
+  # it does, so this is the only thing that can tell "the sync is fine" apart
+  # from "the watchdog died". It answers 200 while the watchdog finished a run
+  # within the last 26 hours and 503 once that goes stale, has never happened,
+  # or cannot be read. Brain loop L384, jet-ops-hub PR #211.
+  "https://jet-ops-hub.vercel.app/api/sync-sops/health"
   # Not a page, a static asset: jet.furniture served a 429 with a 7-day
   # Cache-Control on 2026-09-01, and Cloudflare cached and re-served that 429
   # for days while the homepage itself kept answering 200, unstyled. A
@@ -52,6 +60,7 @@ label_for() {
   case "$1" in
     */api/lead-canary/health) echo "Lead pipeline canary (stale, unreachable, or not deployed)" ;;
     */functions/v1/ops-watchdog) echo "Ops watchdog scheduler (stale, unreachable, or not deployed)" ;;
+    */api/sync-sops/health) echo "Ops Hub SOP sync watchdog (stale, unreachable, or not deployed)" ;;
     */flatsome/assets/css/flatsome.css) echo "jet.furniture static assets (cached-error outage canary)" ;;
     *) echo "$1" ;;
   esac
@@ -73,6 +82,7 @@ strict_200() {
   case "$1" in
     */api/lead-canary/health) return 0 ;;
     */functions/v1/ops-watchdog) return 0 ;;
+    */api/sync-sops/health) return 0 ;;
     */flatsome/assets/css/flatsome.css) return 0 ;;
     *) return 1 ;;
   esac
@@ -94,6 +104,7 @@ marker_for() {
   case "$1" in
     */api/lead-canary/health) echo '"status":"ok"' ;;
     */functions/v1/ops-watchdog) echo '"status":"ok"' ;;
+    */api/sync-sops/health) echo '"status":"ok"' ;;
     *) echo "" ;;
   esac
 }
