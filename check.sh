@@ -19,6 +19,7 @@ SITES=(
   "https://jet-bematrix-calc.netlify.app"
   "https://sage.jet.events"
   "https://jet-command-center-production.up.railway.app"
+  "https://coda.jet.events"
   # Not a site: the lead-pipeline canary's dead man's switch. It answers 200
   # while the canary's last fully clean run is recent and 503 once that goes
   # stale, has never happened, or cannot be read. It is here rather than in an
