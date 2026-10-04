@@ -11,6 +11,7 @@ SITES=(
   "https://jet.furniture"
   "https://jetexhibits.com"
   "https://jet-crm-sepia.vercel.app"
+  "https://sonar.jet.events"
   "https://jet-ops-hub.vercel.app"
   "https://compass.jet.events"
   "https://jetestimatebuilder.netlify.app"
