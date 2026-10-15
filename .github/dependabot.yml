@@ -1,0 +1,22 @@
+# Dependabot config for jet-fallback.
+# Only GitHub Actions lives here (.github/workflows); no package manifest, so no npm entry.
+# Update PRs open Friday 06:00 Pacific, so their CI has run before the Sunday security routine.
+# Minor and patch bumps are grouped into one PR per ecosystem; a major bump arrives as its own PR
+# and waits for Jay (2026-10-05 ruling: big version jumps are his call).
+# cooldown: a release must be 3 days old before a version-update PR proposes it, so a hijacked
+# package release is usually pulled before it reaches us. Security-alert PRs skip the cooldown.
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "friday"
+      time: "06:00"
+      timezone: "America/Los_Angeles"
+    open-pull-requests-limit: 5
+    cooldown:
+      default-days: 3
+    groups:
+      actions-minor-and-patch:
+        update-types: ["minor", "patch"]
