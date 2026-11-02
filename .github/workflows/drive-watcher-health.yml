@@ -1,0 +1,58 @@
+name: drive-watcher-health
+
+# Dead man's switch for the JET Drive Audit Watcher on StudioPro (brain loop L310). It runs
+# here, outside that laptop, because the failure it catches is the watcher not running at
+# all, which nothing on StudioPro can report. Emails Jay after 24 hours with no heartbeat.
+#
+# A red run of THIS workflow means the script itself broke. A detected outage exits 0 and
+# sends an email instead, so one incident never produces two kinds of alert.
+
+on:
+  schedule:
+    - cron: "23 * * * *"
+  workflow_dispatch:
+    inputs:
+      topic_override:
+        description: "Read this ntfy topic instead of the secret, to prove a condition against a throwaway topic"
+        required: false
+        default: ""
+      reset_state:
+        description: "Clear the remembered state before checking"
+        required: false
+        default: "false"
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+
+      - name: Restore previous state
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: drive-watcher-health-state.json
+          key: drive-watcher-health-state-${{ github.run_id }}
+          restore-keys: |
+            drive-watcher-health-state-
+
+      - name: Check the Drive Audit Watcher heartbeat
+        env:
+          DRIVE_WATCHER_NTFY_TOPIC: ${{ secrets.DRIVE_WATCHER_NTFY_TOPIC }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          ALERT_EMAIL_TO: ${{ secrets.ALERT_EMAIL_TO }}
+          TOPIC_OVERRIDE: ${{ github.event.inputs.topic_override }}
+          RESET_STATE: ${{ github.event.inputs.reset_state }}
+        run: bash drive-watcher-health.sh
+
+      - name: Save state
+        if: always()
+        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: drive-watcher-health-state.json
+          key: drive-watcher-health-state-${{ github.run_id }}

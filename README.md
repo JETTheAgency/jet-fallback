@@ -122,3 +122,21 @@ against that same feature branch while `remarkable-health.yml` on that branch re
 sets `REMARKABLE_NTFY_TOPIC`. Uncomment the two `schedule` lines in the workflow. Enabled any
 earlier, the check correctly finds no status, calls the runner silent, and emails `RED:` every
 hour about an automation that does not exist yet.
+
+## Drive Audit Watcher dead man's switch (`drive-watcher-health.sh`)
+
+Watches the JET Drive Audit Watcher on StudioPro (brain loop `L310`), which alerts on bulk
+downloads, bulk deletes and outside sharing in Google Drive.
+
+- **Runs:** `.github/workflows/drive-watcher-health.yml`, hourly at :23, plus
+  `workflow_dispatch` with `topic_override` and `reset_state` (same meaning as above).
+- **Watches:** one ntfy topic (secret `DRIVE_WATCHER_NTFY_TOPIC`). The watcher posts one
+  heartbeat per complete hourly run, titled `jet-drive-watcher`.
+- **Unhealthy means:** no heartbeat for 24 hours (Jay, 2026-11-02). StudioPro is off most
+  nights, and the watcher checks everything it missed when it comes back, so a shorter limit
+  would only report a closed laptop.
+- **Why 24 hours works with a 12 hour cache:** the newest heartbeat time is kept in the state
+  file, and only that time is compared to the limit. A topic that cannot be read leaves it
+  where it was, so a broken read trips the switch at 24 hours instead of passing silently.
+- **Alerts:** one email via Resend on the down transition, a reminder every 24 hours, one on
+  recovery.
